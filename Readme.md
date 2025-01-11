@@ -69,3 +69,26 @@ Common Use Cases:
 2) Authorization: Securely pass user permissions to APIs.
 
 3) Data Exchange: Safely transmit information between systems.
+--------------------------
+- Cloudinary: cloud-based service that provides tools for managing, optimizing, and delivering images and videos in web and mobile applications.
+
+1. fs: In Node.js, fs stands for the File System module, which provides a set of functions to interact with the file system, enabling developers to perform operations like reading, writing, deleting, and modifying files and directories.
+
+
+- Key Features:
+
+a) File Operations: Create, read, write, update, and delete files.
+
+b) Directory Operations: Create, read, delete, and manage directories.
+
+c) Synchronous and Asynchronous APIs: Supports both blocking (synchronous) and non-blocking (asynchronous) methods.
+
+d) Streaming: Allows working with file streams for efficient handling of large files.
+
+- Common Use Cases:
+1) Reading and writing files for data processing.
+Creating and managing log files.
+
+2) File-based configurations and data storage.
+
+3) Handling file uploads in web applications.
