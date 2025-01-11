@@ -7,8 +7,17 @@ dotenv.config({
     path: './env'
 });
 
-connectDB();
+// we have written the function connectDB() with asyncs await, and with async-await, promises are always used.
 
+connectDB()
+.then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+        console.log(`Server is running on port ${process.env.PORT}`)
+    })
+})
+.catch((error) => {
+    console.log("Error: ",error)
+})
 
 
 
