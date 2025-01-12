@@ -1,7 +1,7 @@
 // import {v2} from "cloudinary"; // this is also correct but writing v2 as cloudinary is a good practice
 
 import {v2 as cloudinary} from "cloudinary";   
-import {fs} from "fs";          // fs: file system comes with node js
+import fs from "fs";          // fs: file system comes with node js
 
 cloudinary.config({ 
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -28,4 +28,4 @@ const uploadOnCloudinary = async (localFilePath) => {
     }
 }
 
-export default uploadOnCloudinary
+export {uploadOnCloudinary}

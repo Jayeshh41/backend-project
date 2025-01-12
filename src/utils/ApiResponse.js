@@ -7,7 +7,7 @@ class ApiResponse {
         }
 }
 
-
+export {ApiResponse}
 /*
 API status codes: 
 Informational responses (100 – 199)
