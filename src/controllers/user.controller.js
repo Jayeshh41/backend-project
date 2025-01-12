@@ -18,7 +18,7 @@ const registerUser = asyncHandler (async (req, res) => {
 
     // getting user details (req.body)
     const {username, fullname, email, password} = req.body      // req.body access is by default given by express
-    console.log("fullname: ",fullname);
+
     
     // validation (checking every field at once rather than applying if-else in loop)
     if ([fullname, email, username, password].some((field) => 
@@ -36,7 +36,12 @@ const registerUser = asyncHandler (async (req, res) => {
 
     // check for images, check for avatar
    const avatarLocalPath = req.files?.avatar[0]?.path                  // req.files access is by default given by multer
-   const coverImageLocalPath = req.files?.cover[0]?.path
+// const coverImageLocalPath = req.files?.cover[0]?.path 
+
+    let coverImageLocalPath;
+    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
 
    // we compulsarily need avatar (my requirement) hence, need to check if it exists
    if (!avatarLocalPath) {
@@ -57,7 +62,9 @@ const registerUser = asyncHandler (async (req, res) => {
     fullname, 
     avatar: avatar.url,
     coverImage: coverImage?.url || "",        // coverImage is not compulsory hence we haven't applied the check to coverImage like avatar,if coverImage is not uploaded, it will be empty string 
-    username: username.tolowerCase(), 
+    email,
+    password,
+    username: username.toLowerCase(), 
    })
 
    // to cross-verify if user is actually created

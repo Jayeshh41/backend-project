@@ -18,7 +18,8 @@ const uploadOnCloudinary = async (localFilePath) => {
                 resource_type: "auto",      // gives the file extension
             })
             // file has been uploaded successfully
-            console.log("File is uploaded on cloudinary successfully",response.url)     // In this case, we only want the public url after uploading
+            // console.log("File is uploaded on cloudinary successfully",response.url)     // In this case, we only want the public url after uploading
+            fs.unlinkSync(localFilePath)
             return response         // user will access whatever he wants from this response
     } 
     catch (error) {
