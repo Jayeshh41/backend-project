@@ -93,3 +93,34 @@ Creating and managing log files.
 
 3) Handling file uploads in web applications.
 
+# STATUS CODE IN HTTP
+- 1xx : Informational
+
+1) 101 --> Continue
+2) 102 --> Processing
+
+- 2xx : Success
+
+1) 200 --> Ok
+2) 201 --> Created
+3) 202 --> Accepted
+4) 204 --> No Content
+
+- 3xx : Redirection
+
+1) 307 --> Temporary redirect
+2) 308 --> Permanent redirect
+
+- 4xx : Client error
+
+1) 400 --> Bad request
+2) 401 --> Unauthorized
+3) 402 --> Payment required
+4) 403 --> Forbidden
+5) 404 --> Not found
+
+- 5xx : Server Error
+
+1) 500 --> Internal Server Error
+2) 503 --> Service Unavailable
+3) 504 --> Gateway Timeout
