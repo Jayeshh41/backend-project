@@ -21,8 +21,17 @@ app.use(express.static("public"))                 //static is used to store the 
 
 // cookieParser is used to access and set the cookies of the browser from server side
 app.use(cookieParser()) 
-                    
-export default app
+                 
+// routes import: 
+import userRouter from "./routes/user.routes.js";
+
+
+// routes declaration :
+app.use("/api/v1/users", userRouter);            // writing ("api/v1") is a good practice. only ("/users") wont give an error and 'use' is a middleware
+
+
+// sample url: http://localhost:8000/api/v1/users/register
+export {app};
 
 
 

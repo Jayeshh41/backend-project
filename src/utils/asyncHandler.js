@@ -1,11 +1,11 @@
 // this is a wrapper function using promises that will be used everywhere in productions in industry
 
 const asyncHandler = (requestHandler) => {
-    (req, res, next) => {
-        Promise.resolve(requestHandler(req, res, next)).resolve((error) => next(error))
+    return (req, res, next) => {
+        Promise.resolve(requestHandler(req, res, next)).catch((error) => next(error))
     }
 }
-export default asyncHandler
+export {asyncHandler}
     
     
     
