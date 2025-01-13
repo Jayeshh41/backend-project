@@ -4,7 +4,6 @@ import {User} from "../models/user.models.js";          // to check if user alre
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 
 
 // access and refresh token is so common, hence we are creating a method for it
@@ -12,10 +11,11 @@ const generateAccessAndRefreshTokens  = async (userId) => {
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
-        const requestToken = user.generateRefreshToken()        // saving refresh token in DB(we want refreshtoken to be in DB also)
+        const refreshToken = user.generateRefreshToken()        // saving refresh token in DB(we want refreshtoken to be in DB also)
+        user.refreshToken = refreshToken
         await user.save({validateBeforeSave: false})      // validation is used because by default the password and other fields in mongoose DB get kickedin, to avoid it we need to set validateBeforeSave to false.
         
-        return {accessToken, requestToken}
+        return {accessToken, refreshToken}
 
     } catch (error) {
         throw new ApiError(500, "Something went wrong while generating refresh and access tokens")
@@ -132,9 +132,9 @@ const loginUser = asyncHandler(async(req, res) => {
      }
 
     // generate access and refresh token
-     const {accessToken, requestToken} = await generateAccessAndRefreshTokens(user._id)
+     const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
 
-     const loggedInUser = await User.findById(user._.id).
+     const loggedInUser = await User.findById(user._id).
      select("-password -refreshToken")    // fields that we dont want to send to frontend
 
     // send this tokens as cookies 
@@ -146,7 +146,7 @@ const loginUser = asyncHandler(async(req, res) => {
     return res.
     status(200)
     .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", requestToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
         new ApiResponse(
             200, {
@@ -186,11 +186,56 @@ const logoutUser = asyncHandler (async(req, res) => {
 
 });
 
- 
+// creating a refresh access token as end-point for the user
+const refreshAccessToken = asyncHandler(async(req, res) => {
+    // we have 2 methods to access token, through cookies or if somene's using mobile app(through body)
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+    if(!incomingRefreshToken){
+        throw new ApiError(401, "Unauthorized request")
+    }
+
+    try {
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    
+        const user = await User.findById(decodedToken?._id) 
+        if(!user) {
+            throw new ApiError(401, "Invalid refresh token")
+        }
+    
+        if(incomingRefreshToken !== user?.refreshToken){
+            throw new ApiError(401, "Refresh token is used or expired") 
+        }
+    
+        // sending it as cookies:
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        const {newRefreshToken, accessToken}  = await generateAccessAndRefreshTokens(user._id)
+    
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200, {accessToken, newRefreshToken},
+                 "Access token refreshed"
+            )
+        )
+    } catch (error) {
+        throw new ApiError(401, error?.message || "Invalid refresh token")
+    }
+})
+
+
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshAccessToken,
 };
 // now the method is created, but it will only run when we have an url, so we need create routes (in routes folder).
 
